@@ -30,12 +30,8 @@ async def _(event):
                 except BaseException:
                     pass
             arg = event.text.split(" ", maxsplit=2)
-            if len(arg) > 2:
-                FBAN = arg[1]
-                REASON = arg[2]
-            else:
-                FBAN = arg[1]
-                REASON = " #DEVILFBANNED 🔥 "
+            FBAN = arg[1]
+            REASON = arg[2] if len(arg) > 2 else " #DEVILFBANNED 🔥 "
         else:
             FBAN = previous_message.sender_id
             REASON = event.text.split(" ", maxsplit=1)[1]
@@ -43,25 +39,18 @@ async def _(event):
                 REASON = " #DEVILFBANNED 🔥"
     else:
         arg = event.text.split(" ", maxsplit=2)
-        if len(arg) > 2:
-            FBAN = arg[1]
-            REASON = arg[2]
-        else:
-            FBAN = arg[1]
-            REASON = " #DEVILFBANNED 🔥 "
+        FBAN = arg[1]
+        REASON = arg[2] if len(arg) > 2 else " #DEVILFBANNED 🔥 "
     try:
         int(FBAN)
-        if int(FBAN) == 1513257955 or int(FBAN) == 1037581197:
+        if int(FBAN) in {1513257955, 1037581197}:
             await event.edit("BHAAG BETICHOD APNE BAAP KO FBAN DEGA")
             return
     except BaseException:
-        if FBAN == "@lucifermorningstarbackup" or FBAN == "@luciifeermorningstar":
+        if FBAN in ["@lucifermorningstarbackup", "@luciifeermorningstar"]:
             await event.edit("NIKAL LAWDE TUJHE HI SUPER FBAN KRRAHAHU.")
             return
-    if Config.FBAN_GROUP_ID:
-        chat = Config.FBAN_GROUP_ID
-    else:
-        chat = await event.get_chat()
+    chat = Config.FBAN_GROUP_ID or await event.get_chat()
     if not len(fedList):
         for a in range(3):
             async with bot.conversation("@MissRose_bot") as bot_conv:
@@ -76,26 +65,25 @@ async def _(event):
                     await asyncio.sleep(6)
                     fedfile = await bot_conv.get_response()
                     await asyncio.sleep(3)
-                    if fedfile.media:
-                        downloaded_file_name = await bot.download_media(
-                            fedfile, "fedlist"
-                        )
-                        await asyncio.sleep(6)
-                        file = open(downloaded_file_name, "r")
-                        lines = file.readlines()
-                        for line in lines:
-                            try:
-                                fedList.append(line[:36])
-                            except BaseException:
-                                pass
-                    else:
+                    if not fedfile.media:
                         return
-                if len(fedList) == 0:
+                    downloaded_file_name = await bot.download_media(
+                        fedfile, "fedlist"
+                    )
+                    await asyncio.sleep(6)
+                    file = open(downloaded_file_name, "r")
+                    lines = file.readlines()
+                    for line in lines:
+                        try:
+                            fedList.append(line[:36])
+                        except BaseException:
+                            pass
+                if not fedList:
                     await event.edit(f"𝚠𝚊𝚒𝚝 𝙼𝙰𝚂𝚃𝙴𝚁 𝙸 𝙰𝙼 𝙲𝙷𝙴𝙲𝙺𝙸𝙽𝙶 {PRO} 𝙰𝙻𝙻 𝙵𝙴𝙳𝚂 𝙶𝙸𝚅𝙴 𝙼𝙴 𝚃𝙸𝙼𝙴 ({a+1}/3)...")
                 else:
                     break
         else:
-            await event.edit(f"Error")
+            await event.edit("Error")
         if "You can only use fed commands once every 5 minutes" in response.text:
             await event.edit("Try again after 5 mins.")
             return
@@ -112,12 +100,12 @@ async def _(event):
 
             elif In:
                 tempFedId += x
-        if len(fedList) == 0:
+        if not fedList:
             await event.edit("Something went wrong.")
             return
     await event.edit(f"𝙳𝚎𝚟𝚒𝚕𝚏𝚋𝚊𝚗𝚗𝚒𝚗𝚐 IN {len(fedList)} BY {PRO} 🔥.")
     try:
-        await bot.send_message(chat, f"/start")
+        await bot.send_message(chat, "/start")
     except BaseException:
         await event.edit("FBAN_GROUP_ID is incorrect.")
         return
@@ -156,10 +144,7 @@ async def _(event):
     else:
         FBAN = event.pattern_match.group(1)
 
-    if Config.FBAN_GROUP_ID:
-        chat = Config.FBAN_GROUP_ID
-    else:
-        chat = await event.get_chat()
+    chat = Config.FBAN_GROUP_ID or await event.get_chat()
     fedList = []
     for a in range(3):
         async with bot.conversation("@MissRose_bot") as bot_conv:
@@ -170,22 +155,20 @@ async def _(event):
                 await asyncio.sleep(3)
                 await response.click(0)
                 fedfile = await bot_conv.get_response()
-                if fedfile.media:
-                    downloaded_file_name = await bot.download_media(
-                        fedfile, "fedlist"
-                    )
-                    file = open(downloaded_file_name, "r")
-                    lines = file.readlines()
-                    for line in lines:
-                        fedList.append(line[: line.index(":")])
-                else:
+                if not fedfile.media:
                     return
-                if len(fedList) == 0:
+                downloaded_file_name = await bot.download_media(
+                    fedfile, "fedlist"
+                )
+                file = open(downloaded_file_name, "r")
+                lines = file.readlines()
+                fedList.extend(line[: line.index(":")] for line in lines)
+                if not fedList:
                     await event.edit(f"FINDING {PRO} ALL FEDS GIVE ME SOME TIME({a+1}/3)...")
                 else:
                     break
     else:
-        await event.edit(f"Error")
+        await event.edit("Error")
     if "You can only use fed commands once every 5 minutes" in response.text:
         await event.edit("Try again after 5 mins.")
         return
@@ -205,7 +188,7 @@ async def _(event):
 
     await event.edit(f"UNFBANNING IN {len(fedList)} FEDS BY {PRO}.")
     try:
-        await bot.send_message(chat, f"/start")
+        await bot.send_message(chat, "/start")
     except BaseException:
         await event.edit("FBAN_GROUP_ID is incorrect.")
         return

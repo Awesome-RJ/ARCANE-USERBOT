@@ -31,7 +31,7 @@ async def _(event):
             try:
                 await conv.send_message("/start")
                 await conv.get_response()
-                await conv.send_message("/mypokemon " + sysarg)
+                await conv.send_message(f"/mypokemon {sysarg}")
                 audio = await conv.get_response()
                 await borg.send_message(event.chat_id, audio.text)
                 await event.delete()
@@ -42,7 +42,7 @@ async def _(event):
             try:
                 await conv.send_message("/start")
                 await conv.get_response()
-                await conv.send_message("/mypokemon " + sysarg)
+                await conv.send_message(f"/mypokemon {sysarg}")
                 audio = await conv.get_response()
                 await borg.send_message(event.chat_id, audio.text)
                 await event.delete()

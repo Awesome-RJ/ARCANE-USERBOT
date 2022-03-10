@@ -22,7 +22,6 @@ logs_id = Var.PRIVATE_GROUP_ID
 # Keep all credits pls, made with great effort by @HeisenbergTheDanger
 
 @borg.on(admin_cmd(pattern="forward ?(.*)"))
-
 async def forw(event): 
   if event.fwd_from:
     return
@@ -32,7 +31,7 @@ async def forw(event):
   channels = get_all_channels()
   await event.edit("Sending...")
   error_count = 0
-  sent_count = 0 
+  sent_count = 0
   if event.reply_to_msg_id:
     previous_message = await event.get_reply_message()
     message = previous_message.message
@@ -46,7 +45,7 @@ async def forw(event):
     except Exception as error:
       try:
         await borg.send_message(logs_id, f"Error in sending at {channel.chat_id}.")
-        await borg.send_message(logs_id, "Error! " + str(error))
+        await borg.send_message(logs_id, f"Error! {str(error)}")
         if error == "The message cannot be empty unless a file is provided":
             event.edit("For sending files, upload in Saved Messages and reply .forward to in.")
             return
@@ -63,7 +62,6 @@ async def forw(event):
     
     
 @borg.on(admin_cmd(pattern="broadcast ?(.*)"))
-
 async def _(event):
   if event.fwd_from:
         return
@@ -71,8 +69,6 @@ async def _(event):
     await event.edit("Reply to a message to broadcast.")
     return
   channels = get_all_channels()
-  error_count = 0
-  sent_count = 0
   await event.edit("Sending, please weit....")
   if event.reply_to_msg_id:
     previous_message = await event.get_reply_message()
@@ -82,29 +78,31 @@ async def _(event):
     if previous_message.gif or previous_message.audio or previous_message.voice or previous_message.video or previous_message.video_note or previous_message.contact or previous_message.game or previous_message.geo or previous_message.invoice:     # Written by @HeisenbergTheDanger
         await event.edit("Not supported. Try .forward")
         return
+    error_count = 0
+    sent_count = 0
     if not previous_message.web_preview and previous_message.photo:
       file = await borg.download_file(previous_message.media)
       uploaded_doc = await borg.upload_file(file, file_name="img.png")
       raw_text = previous_message.text
       for channel in channels:
         try:
-            if previous_message.photo:
-                await borg.send_file(
-                                int(channel.chat_id),
-                                InputMediaUploadedPhoto(
-                                    file=uploaded_doc
-                                ),
-                                force_document=False,
-                                caption = raw_text,
-                                link_preview = False
-                            )
-        
-            sent_count += 1
-            await event.edit(f"Sent : {sent_count}\nError : {error_count}\nTotal : {len(channels)}")
+          if previous_message.photo:
+              await borg.send_file(
+                              int(channel.chat_id),
+                              InputMediaUploadedPhoto(
+                                  file=uploaded_doc
+                              ),
+                              force_document=False,
+                              caption = raw_text,
+                              link_preview = False
+                          )
+
+          sent_count += 1
+          await event.edit(f"Sent : {sent_count}\nError : {error_count}\nTotal : {len(channels)}")
         except Exception as error:
           try:
             await borg.send_message(logs_id, f"Error in sending at {chat_id}.")
-            await borg.send_message(logs_id, "Error! " + str(error))
+            await borg.send_message(logs_id, f"Error! {str(error)}")
             if error == "The message cannot be empty unless a file is provided":
                 event.edit("For sending files, upload in Saved Messages and reply .forward to in.")
                 return
@@ -117,7 +115,7 @@ async def _(event):
         try:
             await borg.send_message(logs_id, f"{error_count} Errors")
         except:
-            pass      
+            pass
     else:
       raw_text = previous_message.text
       for channel in channels:
@@ -128,7 +126,7 @@ async def _(event):
         except Exception as error:
           try:
             await borg.send_message(logs_id, f"Error in sending at {channel.chat_id}.")
-            await borg.send_message(logs_id, "Error! " + str(error))
+            await borg.send_message(logs_id, f"Error! {str(error)}")
             if error == "The message cannot be empty unless a file is provided":
                 event.edit("For sending files, upload in Saved Messages and reply .forward to in.")
                 return
@@ -236,13 +234,13 @@ async def list(event):
         
 @borg.on(admin_cmd(pattern="search ?(.*)"))
 async def search(event):
-    channel_id =  event.pattern_match.group(1)
-    try:
-        channel = await borg.get_entity(int(channel_id))
-    except ValueError:
-        await event.edit("Invalid id.")
-    name = channel.title
-    username = channel.username
-    if username:
-        username = "@" + username
-    await event.edit(f"Name : {name}\nUsername: {username}")
+  channel_id =  event.pattern_match.group(1)
+  try:
+      channel = await borg.get_entity(int(channel_id))
+  except ValueError:
+      await event.edit("Invalid id.")
+  name = channel.title
+  username = channel.username
+  if username:
+    username = f"@{username}"
+  await event.edit(f"Name : {name}\nUsername: {username}")

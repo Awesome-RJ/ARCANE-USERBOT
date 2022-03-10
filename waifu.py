@@ -93,7 +93,7 @@ async def scam(results, lim):
     oboi = re.findall(pattern, decoded, re.I | re.M)
     for imglink in oboi:
         counter += 1
-        if not counter >= int(lim):
+        if counter < int(lim):
             imglinks.append(imglink)
         else:
             break
@@ -108,9 +108,8 @@ async def chrome(chrome_options=None):
         os.mkdir(TEMP_DOWNLOAD_DIRECTORY)
     prefs = {'download.default_directory': TEMP_DOWNLOAD_DIRECTORY}
     chrome_options.add_experimental_option('prefs', prefs)
-    driver = webdriver.Chrome(executable_path=CHROME_DRIVER,
+    return webdriver.Chrome(executable_path=CHROME_DRIVER,
                               options=chrome_options)
-    return driver
 #Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam
 #Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made by Sh1vam
 #Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made by Sh1vam
@@ -124,50 +123,50 @@ async def on_new_message(event):
 		
 
 
-        name = event.raw_text
-        snip = """appeared!
+    name = event.raw_text
+    snip = """appeared!
 Add them to your harem by sending /protecc character name""" 
 
 
-        pattern = r"( |^|[^\w])" + re.escape(snip) + r"( |$|[^\w])"
-        if re.search(pattern, name, flags=re.IGNORECASE):
-            try:
-				
-                      
-                      photo = io.BytesIO()
-                      await event.client.download_media(event.media, photo)
-                      image = Image.open(photo)
-                      name = "okgoogle.png"
-                      image.save(name, "PNG")
-                      image.close()
-                      searchUrl = 'https://www.google.com/searchbyimage/upload'
-                      multipart = {
-                              'encoded_image': (name, open(name, 'rb')),
-                              'image_content': ''
-                      }
-                      response = requests.post(searchUrl,
-                                                                       files=multipart,
-                                                                       allow_redirects=False)
-                      fetchUrl = response.headers['Location']
-                      match = await ParseSauce(fetchUrl +"&preferences?hl=en&fg=1#languages")
-                      guess = match['best_guess']
-                      guesss = guess[12:]
-                      #Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam
-                      #Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam
-                      #Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam
-                      #Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam
-                      try:
-                            from userbot.modules.sql_helper.autowafu_sql import get_current_wafu_settings
-                            from userbot.modules.sql_helper.autowafu_sql import update_previous_wafu
-                      except AttributeError:
-                            return
-                      cws = get_current_wafu_settings(event.chat_id)
-                      if cws:
-                          await event.reply( f"/protecc {guesss}")
-                      else:
-                          await borg.send_message( WAFU_CHATID,f"/protecc {guesss}")
-            except Exception as e:
-                pass
+    pattern = f"( |^|[^\\w]){re.escape(snip)}( |$|[^\\w])"
+    if re.search(pattern, name, flags=re.IGNORECASE):
+        try:
+
+
+                  photo = io.BytesIO()
+                  await event.client.download_media(event.media, photo)
+                  image = Image.open(photo)
+                  name = "okgoogle.png"
+                  image.save(name, "PNG")
+                  image.close()
+                  searchUrl = 'https://www.google.com/searchbyimage/upload'
+                  multipart = {
+                          'encoded_image': (name, open(name, 'rb')),
+                          'image_content': ''
+                  }
+                  response = requests.post(searchUrl,
+                                                                   files=multipart,
+                                                                   allow_redirects=False)
+                  fetchUrl = response.headers['Location']
+                  match = await ParseSauce(fetchUrl +"&preferences?hl=en&fg=1#languages")
+                  guess = match['best_guess']
+                  guesss = guess[12:]
+                  #Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam
+                  #Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam
+                  #Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam
+                  #Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam
+                  try:
+                        from userbot.modules.sql_helper.autowafu_sql import get_current_wafu_settings
+                        from userbot.modules.sql_helper.autowafu_sql import update_previous_wafu
+                  except AttributeError:
+                        return
+                  cws = get_current_wafu_settings(event.chat_id)
+                  if cws:
+                      await event.reply( f"/protecc {guesss}")
+                  else:
+                      await borg.send_message( WAFU_CHATID,f"/protecc {guesss}")
+        except Exception as e:
+            pass
 #Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made by Sh1vam#Made#Made by Shivam
 #Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam#Made by Shivam
 
